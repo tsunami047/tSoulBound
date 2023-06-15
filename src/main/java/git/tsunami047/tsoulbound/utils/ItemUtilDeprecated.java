@@ -15,7 +15,7 @@ import java.util.Optional;
  * @CreateTime: 2023-06-15  18:33
  * @Description: ?
  */
-public class ItemUtil {
+public class ItemUtilDeprecated {
 
     /**
      * @date 2023/6/15 19:08
@@ -81,29 +81,21 @@ public class ItemUtil {
      * @description 返回-1表示无对应行，0以上为响应行数
      */
     public static int updateItemStack(ItemStack item,String bindBefore,String bindLater,String playerName){
-        if (!needToHandle(item)) {
+        if(!needToHandle(item)){
             return -1;
         }
-
         ItemMeta itemMeta = item.getItemMeta();
         List<String> lore = itemMeta.getLore();
-
-        for (int i = 0; i < lore.size(); i++) {
-            String current = lore.get(i);
-            if (current.contains(bindBefore)) {
-                lore.set(i, bindLater.replace("%player_name%", playerName));
-                itemMeta.setLore(lore);
-
-                if (Bukkit.isPrimaryThread()) {
-                    item.setItemMeta(itemMeta);
-                } else {
-                    Bukkit.getScheduler().runTask(TSoulBound.plugin, () -> item.setItemMeta(itemMeta));
-                }
-
-                return i;
-            }
+        Optional<String> first = lore.stream().filter(i -> i.contains(bindBefore)).findFirst();
+        if (first.isPresent()) {
+            int i = lore.indexOf(first.get());
+            lore.set(i,bindLater.replace("%player_name%",playerName));
+            itemMeta.setLore(lore);
+            if (!Bukkit.isPrimaryThread()) {
+                Bukkit.getScheduler().runTask(TSoulBound.plugin,()->item.setItemMeta(itemMeta));
+            }else item.setItemMeta(itemMeta);
+            return i;
         }
-
         return -1;
     }
 
@@ -115,12 +107,11 @@ public class ItemUtil {
      * @description 判断一个物品有无绑定标签
      */
     public static boolean isItemLoreHasKey(ItemStack item,String key){
-        for (String lore : item.getItemMeta().getLore()) {
-            if (lore.contains(key)) {
-                return true;
-            }
-        }
-        return false;
+        return item
+                .getItemMeta()
+                .getLore()
+                .parallelStream()
+                .anyMatch(i -> i.contains(ConfigBean.bound_key));
     }
 
 
@@ -134,16 +125,17 @@ public class ItemUtil {
      */
     public static int isItemStackOwner(String playerName,ItemStack item,String bindLater){
         List<String> lore = item.getItemMeta().getLore();
-        for (String i : lore) {
-            if (i.contains(ConfigBean.bound_key)) {
-                if (i.replace(bindLater, "").equals(playerName)) {
-                    return 1;
-                } else {
-                    return 0;
-                }
+        Optional<String> first = lore.parallelStream().filter(i -> i.contains(ConfigBean.bound_key)).findFirst();
+        if (first.isPresent()){
+            String s = first.get();
+            if (s.replace(bindLater, "").equals(playerName)) {
+                return 1;
+            }else{
+                return 0;
             }
+        }else{
+            return -1;
         }
-        return -1;
     }
 
     /**

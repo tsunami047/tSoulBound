@@ -50,10 +50,14 @@ public class PlayerDropItemListener implements Listener {
         if(!needToHandle(item)){
             return;
         }
+        if(ItemUtil.isItemLoreHasKey(item,ConfigBean.bind_lore_key)){
+            ItemUtil.updateItemStack(item, ConfigBean.bind_lore_key,ConfigBean.bound_lore,player.getName());
+        }
         int itemStackOwner = ItemUtil.isItemStackOwner(player.getName(), item, ConfigBean.bound_key);
         if(itemStackOwner==-1){
             return;
         }
+
         if (itemStackOwner==1) {
             ConfigBean.sendMessage(player,"drop_item_cancelled");
             e.setCancelled(true);

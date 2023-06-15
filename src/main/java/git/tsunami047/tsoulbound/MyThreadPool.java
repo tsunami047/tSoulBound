@@ -10,9 +10,9 @@ import java.util.concurrent.*;
 public class MyThreadPool {
 
     private final ExecutorService executor;
-    private final ExecutorService singleExecutor;
-    public static final ForkJoinPool forkJoinPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
-    public static ScheduledExecutorService executorService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+    private  ExecutorService singleExecutor;
+//    public static final ForkJoinPool forkJoinPool = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
+//    public static ScheduledExecutorService executorService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
     private volatile static MyThreadPool myThreadPool;
 
     public static CompletableFuture execute(Runnable runnable) {
@@ -46,7 +46,7 @@ public class MyThreadPool {
 
     private MyThreadPool() {
         executor = Executors.newCachedThreadPool();
-        singleExecutor = Executors.newSingleThreadExecutor();
+//        singleExecutor = Executors.newSingleThreadExecutor();
 
     }
 

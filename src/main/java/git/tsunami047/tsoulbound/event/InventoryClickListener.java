@@ -25,6 +25,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static git.tsunami047.tsoulbound.utils.ItemUtil.needToHandle;
 
 /**
@@ -50,11 +54,14 @@ public class InventoryClickListener implements Listener {
             if(!needToHandle(item)){
                 return;
             }
+            if(ItemUtil.isItemLoreHasKey(item,ConfigBean.bind_lore_key)){
+                ItemUtil.updateItemStack(item, ConfigBean.bind_lore_key,ConfigBean.bound_lore,player.getName());
+            }
             int itemStackOwner = ItemUtil.isItemStackOwner(player.getName(), item, ConfigBean.bound_key);
             if(itemStackOwner==-1){
+                //没有绑定关键词
                 return;
             }
-
             if (itemStackOwner==0) {
                 ConfigBean.sendMessage(player,"click_cancelled");
                 e.setCancelled(true);

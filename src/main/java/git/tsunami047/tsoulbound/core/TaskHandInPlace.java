@@ -16,14 +16,26 @@ import java.util.concurrent.Executors;
 public class TaskHandInPlace {
 
     public static LinkedHandler handler = new LinkedHandler();
+    public static int pauseTime = 999999;
 
     public static void start() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
             while (true) {
                 try {
-                    Thread.sleep(ConfigBean.delay);
+                    long start = System.currentTimeMillis();
                     handInAllPlayer();
+                    long end = System.currentTimeMillis();
+                    int timeConsuming  = (int) (end - start);
+                    if(timeConsuming<=ConfigBean.delay){
+                        Thread.sleep(ConfigBean.delay-timeConsuming);
+                        pauseTime += 1000;
+                        if(pauseTime>=999999){
+                            pauseTime = 999999;
+                        }
+                    }else{
+                        pauseTime -= 1000;
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -36,7 +48,7 @@ public class TaskHandInPlace {
         Collection<? extends Player> players = TSoulBound.plugin.getServer().getOnlinePlayers();
         for (Player player : players) {
             try {
-                Thread.sleep(10);
+                Thread.sleep(5);
                 addTask(player);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

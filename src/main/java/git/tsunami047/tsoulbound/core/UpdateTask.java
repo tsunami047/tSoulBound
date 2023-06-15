@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import static git.tsunami047.tsoulbound.core.TaskHandInPlace.pauseTime;
 import static git.tsunami047.tsoulbound.event.ConfigBean.getMessage;
 import static git.tsunami047.tsoulbound.utils.ItemUtil.needToHandle;
 
@@ -62,7 +63,7 @@ public class UpdateTask {
                 }
             }
             try {
-                Thread.sleep(1);
+                Thread.sleep(0, pauseTime);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

@@ -47,7 +47,6 @@ public class PlayerPickupItemListener implements Listener {
         Player player = e.getPlayer();
         ItemStack itemStack = e.getItem().getItemStack();
         ItemUtil.updateItemStack(itemStack, ConfigBean.bind_lore_key,ConfigBean.bound_lore,player.getName());
-
         if(!ConfigBean.not_allow_pick_up_other_item){
             return;
         }
