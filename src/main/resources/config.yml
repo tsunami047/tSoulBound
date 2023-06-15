@@ -1,0 +1,23 @@
+version: 1.0
+
+bind_lore_key: "§a拾取绑定"
+bound_lore: "§c认主: §a%player_name%"
+
+censor-freq: 1000
+#不是自己的物品无法点击
+not_allow_click_other_item: true
+#绑定物品不准丢出
+not_allow_throw_out_owner_item: true
+#不是自己的物品禁止拿着左右键
+not_allow_other_interact: true
+#不是自己的物品不能捡起
+not_allow_pick_up_other_item: true
+
+message:
+  prefix: "&7tSoulBound &f>> "
+  bind_success: "§f物品 %item_name% §f被绑定了!"
+  click_cancelled: "&c禁止点击不属于你的物品"
+  drop_item_cancelled: "&c禁止丢出已经绑定物品"
+  interact_cancelled: "&c不属于你的物品无法在背包中点击"
+  pickup_item_cancelled: "&c拾起物品已经被别人绑定"
+  other_item_throw_out: "&c不属于自己物品被丢出"

@@ -1,0 +1,10 @@
+name: tSoulBound
+version: '${project.version}'
+main: git.tsunami047.tsoulbound.TSoulBound
+authors: [ tsunami047 ]
+commands:
+  tSoulBound:
+    description: Main command
+    aliases:
+      - sb
+      - bs
