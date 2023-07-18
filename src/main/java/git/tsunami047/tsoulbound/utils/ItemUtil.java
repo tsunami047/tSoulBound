@@ -9,6 +9,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @Author: natsumi
@@ -91,7 +93,7 @@ public class ItemUtil {
         for (int i = 0; i < lore.size(); i++) {
             String current = lore.get(i);
             if (current.contains(bindBefore)) {
-                lore.set(i, bindLater.replace("%player_name%", playerName));
+                lore.set(i, bindLater.replace("(.+?)", playerName).replace("^","").replace("$",""));
                 itemMeta.setLore(lore);
 
                 if (Bukkit.isPrimaryThread()) {
@@ -123,24 +125,49 @@ public class ItemUtil {
         return false;
     }
 
+    /**
+     * @date 2023/7/16 22:13
+     * @param input
+     * @return String
+     * @description 取玩家名字
+     */
+    public static String extractPlayerName(String input) {
+        Pattern pattern = Pattern.compile(ConfigBean.bound_lore);
+        Matcher matcher = pattern.matcher(input);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+
+        // 如果没有匹配到，则返回空字符串或者抛出异常，具体根据需求决定
+        return null;
+    }
+
+
+
 
     /**
      * @date 2023/6/15 19:01
      * @param playerName
      * @param item
-     * @param bindLater 需要配置中绑定之后的字符串
      * @return -1 没有匹配到绑定关键词 1 是自己的 0是别人的
      * @description 判断物品属不属于此玩家
      */
-    public static int isItemStackOwner(String playerName,ItemStack item,String bindLater){
+    public static int isItemStackOwner(String playerName,ItemStack item){
+        if(!ItemUtil.needToHandle(item)){
+            return -1;
+        }
         List<String> lore = item.getItemMeta().getLore();
-        for (String i : lore) {
-            if (i.contains(ConfigBean.bound_key)) {
-                if (i.replace(bindLater, "").equals(playerName)) {
-                    return 1;
-                } else {
-                    return 0;
-                }
+        if(lore.size() == 0){
+            return -1;
+        }
+        String s = lore.get(0);
+        String s1 = extractPlayerName(s);
+        if(s1 !=null){
+            if(s1.equals(playerName)){
+                return 1;
+            }else{
+                return 0;
             }
         }
         return -1;
@@ -149,25 +176,28 @@ public class ItemUtil {
     /**
      * @date 2023/6/15 19:10
      * @param item
-     * @param notNameBindLater 需要没有玩家名字的绑定后符号
      * @return boolean 返回是否成功
      * @description ?
      */
-    public static boolean unbind(ItemStack item,String notNameBindLater){
+    public static boolean unbind(ItemStack item ){
         if (!needToHandle(item)) {
             return false;
         }
         ItemMeta itemMeta = item.getItemMeta();
-        List<String> lore = itemMeta.getLore();
-        Optional<String> first = lore.stream().filter(i -> i.contains(notNameBindLater)).findFirst();
-        if (first.isPresent()) {
-            lore.remove(first.get());
-            itemMeta.setLore(lore);
-            if (!Bukkit.isPrimaryThread()) {
-                Bukkit.getScheduler().runTask(TSoulBound.plugin,()->item.setItemMeta(itemMeta));
-            }else item.setItemMeta(itemMeta);
-            return false;
+        List<String> lore = item.getItemMeta().getLore();
+        int line = -1;
+        for (int i = 0; i < lore.size(); i++) {
+            String sumLore = lore.get(i);
+            String itemPlayerName = extractPlayerName(sumLore);
+            if(itemPlayerName !=null){
+                line = i;
+            }
         }
+        lore.remove(line);
+        itemMeta.setLore(lore);
+        if (!Bukkit.isPrimaryThread()) {
+            Bukkit.getScheduler().runTask(TSoulBound.plugin,()->item.setItemMeta(itemMeta));
+        }else item.setItemMeta(itemMeta);
         return false;
     }
 }

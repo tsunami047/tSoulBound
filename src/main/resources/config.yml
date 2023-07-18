@@ -1,7 +1,9 @@
 version: 1.0
 
 bind_lore_key: "§a拾取绑定"
-bound_lore: "§c认主: §a%player_name%"
+#(.+?) ^§7(.+?)的$
+bound_lore: "^§7%player_name%的$"
+
 
 censor-freq: 1000
 #不是自己的物品无法点击
@@ -12,6 +14,19 @@ not_allow_throw_out_owner_item: true
 not_allow_other_interact: true
 #不是自己的物品不能捡起
 not_allow_pick_up_other_item: true
+
+add_attr_slot: germplugin_sp_jz4,germplugin_sp_jz3,germplugin_sp_jz2,germplugin_sp_jz1,germplugin_sp_xl,germplugin_sp_wz
+
+perform_cmds:
+  tiliyueka:
+    - cmd
+
+deny_left_click:
+  - 弓
+
+#职业名映射
+lore_name_map:
+  剑: 人族剑士,龙族剑士,牛头人战士
 
 message:
   prefix: "&7tSoulBound &f>> "

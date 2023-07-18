@@ -17,11 +17,14 @@ public final class TSoulBound extends JavaPlugin {
 
         ConfigManager.loadConfig();
         afterLoadConfig();
+        TaskHandInPlace.start();
         Bukkit.getPluginManager().registerEvents(new InventoryClickListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerDropItemListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(),this);
         Bukkit.getPluginManager().registerEvents(new PlayerPickupItemListener(),this);
+        Bukkit.getPluginManager().registerEvents(new AttrEquipmentUpdateListener(),this);
         this.getCommand("tSoulBound").setExecutor(new CommandHandler());
+        PlayerInteractListener.restrictLeftClickOnCertainItems();
     }
 
     @Override
@@ -31,6 +34,7 @@ public final class TSoulBound extends JavaPlugin {
 
     public void afterLoadConfig() {
         ConfigBean.load(ConfigManager.basicConfig);
-        TaskHandInPlace.start();
+        AttrEquipmentUpdateListener.load();
+        PlayerInteractListener.load();
     }
 }

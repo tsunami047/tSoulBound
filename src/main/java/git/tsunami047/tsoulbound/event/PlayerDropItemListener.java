@@ -53,7 +53,7 @@ public class PlayerDropItemListener implements Listener {
         if(ItemUtil.isItemLoreHasKey(item,ConfigBean.bind_lore_key)){
             ItemUtil.updateItemStack(item, ConfigBean.bind_lore_key,ConfigBean.bound_lore,player.getName());
         }
-        int itemStackOwner = ItemUtil.isItemStackOwner(player.getName(), item, ConfigBean.bound_key);
+        int itemStackOwner = ItemUtil.isItemStackOwner(player.getName(), item);
         if(itemStackOwner==-1){
             return;
         }

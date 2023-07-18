@@ -2,6 +2,8 @@ name: tSoulBound
 version: '${project.version}'
 main: git.tsunami047.tsoulbound.TSoulBound
 authors: [ tsunami047 ]
+depend:
+  - ProtocolLib
 commands:
   tSoulBound:
     description: Main command

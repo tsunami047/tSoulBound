@@ -38,6 +38,9 @@ import static git.tsunami047.tsoulbound.utils.ItemUtil.needToHandle;
  * @version: $
  */
 public class InventoryClickListener implements Listener {
+
+
+
     
     @EventHandler(priority = EventPriority.MONITOR)
     public void whenInventoryClick(InventoryClickEvent e) {
@@ -57,7 +60,7 @@ public class InventoryClickListener implements Listener {
             if(ItemUtil.isItemLoreHasKey(item,ConfigBean.bind_lore_key)){
                 ItemUtil.updateItemStack(item, ConfigBean.bind_lore_key,ConfigBean.bound_lore,player.getName());
             }
-            int itemStackOwner = ItemUtil.isItemStackOwner(player.getName(), item, ConfigBean.bound_key);
+            int itemStackOwner = ItemUtil.isItemStackOwner(player.getName(), item);
             if(itemStackOwner==-1){
                 //没有绑定关键词
                 return;

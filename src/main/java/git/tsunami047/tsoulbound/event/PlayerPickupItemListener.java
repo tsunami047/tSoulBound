@@ -50,10 +50,13 @@ public class PlayerPickupItemListener implements Listener {
         if(!ConfigBean.not_allow_pick_up_other_item){
             return;
         }
+        if (player.isOp()) {
+            return;
+        }
         if(!needToHandle(itemStack)){
             return;
         }
-        int itemStackOwner = ItemUtil.isItemStackOwner(player.getName(), itemStack, ConfigBean.bound_key);
+        int itemStackOwner = ItemUtil.isItemStackOwner(player.getName(), itemStack);
         if(itemStackOwner==-1){
             return;
         }

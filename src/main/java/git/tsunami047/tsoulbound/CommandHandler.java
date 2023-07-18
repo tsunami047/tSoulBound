@@ -1,8 +1,11 @@
 package git.tsunami047.tsoulbound;
 
+import Ly.levelplus.Data;
+import Ly.levelplus.Main;
 import git.tsunami047.tsoulbound.core.UpdateTask;
 import git.tsunami047.tsoulbound.event.ConfigBean;
 import git.tsunami047.tsoulbound.utils.ItemUtil;
+import git.tsunami047.tsoulbound.utils.ReflectionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,6 +17,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static git.tsunami047.tsoulbound.MessageUtility.sendMessage;
 import static git.tsunami047.tsoulbound.TSoulBound.plugin;
@@ -104,6 +110,9 @@ public class CommandHandler implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command myCommand, String lable, String[] args) {
         Player sendCommandPlayer = sender instanceof Player ? ((Player) sender) : null;
+        if(!(sender instanceof ConsoleCommandSender) && !(sendCommandPlayer != null && sendCommandPlayer.isOp())){
+            return true;
+        }
         ItemStack itemInHand = null;
         ItemMeta itemMeta = null;
         List<String> lore = null;
@@ -128,6 +137,10 @@ public class CommandHandler implements CommandExecutor {
             return false;
         }
         switch (args[0].toLowerCase()) {
+            case "test_abc":
+                ConcurrentHashMap<String,Map<UUID, Map<String, Data>>> levelMap = (ConcurrentHashMap<String, Map<UUID, Map<String, Data>>>) ReflectionUtil.getPrivateStaticFieldValue(Main.class, "datas");
+                System.out.println(levelMap);
+                return true;
             case "check":
                 if(args.length>=3){
                     MyThreadPool.asyncExecute(()->
@@ -144,34 +157,6 @@ public class CommandHandler implements CommandExecutor {
                         new UpdateTask(player).execute();
                     });
                 }
-                return true;
-            case "asdsfdsa_test":
-                if (!ItemUtil.needToHandle_(itemInHand)) {
-                    sendMessage(sender, "手上物品不能处理");
-                    return true;
-                }
-                lore.add(ConfigBean.bound_lore.replace("%player_name%","tsunami048"));
-                itemMeta.setLore(lore);
-                itemInHand.setItemMeta(itemMeta);
-                sendMessage(sender, "完成");
-                return true;
-            case "asdsfdsa_bind":
-                if (!ItemUtil.needToHandle_(itemInHand)) {
-                    sendMessage(sender, "手上物品不能处理");
-                    return true;
-                }
-                lore.add(ConfigBean.bind_lore_key);
-                itemMeta.setLore(lore);
-                itemInHand.setItemMeta(itemMeta);
-                sendMessage(sender, "完成");
-                return true;
-            case "asdsfdsa_unbind":
-                if (!ItemUtil.needToHandle_(itemInHand)) {
-                    sendMessage(sender, "手上物品不能处理");
-                    return true;
-                }
-                ItemUtil.unbind(itemInHand,ConfigBean.bound_key);
-                sendMessage(sender, "完成");
                 return true;
             case "test":
                 if (!ItemUtil.needToHandle_(itemInHand)) {
@@ -198,7 +183,8 @@ public class CommandHandler implements CommandExecutor {
                     sendMessage(sender, "手上物品不能处理");
                     return true;
                 }
-                ItemUtil.unbind(itemInHand,ConfigBean.bound_key);
+
+                ItemUtil.unbind(itemInHand);
                 sendMessage(sender, "完成");
                 return true;
             case "reload":

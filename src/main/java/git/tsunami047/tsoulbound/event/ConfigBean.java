@@ -14,8 +14,8 @@ public class ConfigBean {
 
     public static long delay;
     public static String bind_lore_key;
+    //正则表达式了
     public static String bound_lore;
-    public static String bound_key;
 
     public static boolean not_allow_click_other_item;
     public static boolean not_allow_throw_out_owner_item;
@@ -28,8 +28,7 @@ public class ConfigBean {
     public static void load(YamlConfiguration yaml){
         delay = yaml.getLong("censor-freq");
         bind_lore_key = yaml.getString("bind_lore_key").replace("&","§");
-        bound_lore = yaml.getString("bound_lore").replace("&","§");
-        bound_key = bound_lore.replace("%player_name%","");
+        bound_lore = yaml.getString("bound_lore").replace("&","§").replace("%player_name%","(.+?)");
         not_allow_click_other_item = yaml.getBoolean("not_allow_click_other_item");
         not_allow_throw_out_owner_item = yaml.getBoolean("not_allow_throw_out_owner_item");
         not_allow_other_interact = yaml.getBoolean("not_allow_other_interact");

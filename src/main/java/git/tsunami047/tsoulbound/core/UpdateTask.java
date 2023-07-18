@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import static git.tsunami047.tsoulbound.core.TaskHandInPlace.bind_message;
 import static git.tsunami047.tsoulbound.core.TaskHandInPlace.pauseTime;
 import static git.tsunami047.tsoulbound.event.ConfigBean.getMessage;
 import static git.tsunami047.tsoulbound.utils.ItemUtil.needToHandle;
@@ -39,7 +40,7 @@ public class UpdateTask {
             if(!needToHandle(item)){
                 continue;
             }
-            int itemStackOwner = ItemUtil.isItemStackOwner(playerName, item, ConfigBean.bound_key);
+            int itemStackOwner = ItemUtil.isItemStackOwner(playerName, item);
             if (itemStackOwner==0) {
                 if (Bukkit.isPrimaryThread()) {
                     inventory.setItem(i, null);
@@ -56,10 +57,13 @@ public class UpdateTask {
                 continue;
             }
             if (ItemUtil.updateItemStack(item, ConfigBean.bind_lore_key,ConfigBean.bound_lore,playerName)!=-1) {
+                if(bind_message == null){
+                    continue;
+                }
                 if (item.getItemMeta().hasDisplayName()) {
-                    player.sendMessage(ConfigManager.pluginPrefix+getMessage("bind_success").replace("%player_name",player.getName()).replace("&","§").replace("%item_name%", item.getItemMeta().getDisplayName()));
+                    player.sendMessage(ConfigManager.pluginPrefix+bind_message.replace("%player_name",player.getName()).replace("&","§").replace("%item_name%", item.getItemMeta().getDisplayName()));
                 }else {
-                    player.sendMessage(ConfigManager.pluginPrefix + getMessage("bind_success").replace("%player_name", player.getName()).replace("&", "§").replace("%item_name%", String.valueOf(item.getTypeId())));
+                    player.sendMessage(ConfigManager.pluginPrefix + bind_message.replace("%player_name", player.getName()).replace("&", "§").replace("%item_name%", String.valueOf(item.getTypeId())));
                 }
             }
             try {

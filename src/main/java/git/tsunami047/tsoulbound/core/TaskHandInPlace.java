@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static git.tsunami047.tsoulbound.event.ConfigBean.getMessage;
+
 /**
  * @Author: natsumi
  * @CreateTime: 2023-06-15  19:16
@@ -16,6 +18,7 @@ import java.util.concurrent.Executors;
 public class TaskHandInPlace {
 
     public static LinkedHandler handler = new LinkedHandler();
+    public static String bind_message;
     public static int pauseTime = 999999;
 
     public static void start() {
@@ -28,20 +31,27 @@ public class TaskHandInPlace {
                     long end = System.currentTimeMillis();
                     int timeConsuming  = (int) (end - start);
                     if(timeConsuming<=ConfigBean.delay){
-                        Thread.sleep(ConfigBean.delay-timeConsuming);
-                        pauseTime += 1000;
+                        if(ConfigBean.delay-timeConsuming<0){
+                            Thread.sleep(100);
+                        }else {
+                            Thread.sleep(ConfigBean.delay - timeConsuming);
+                        }
+                        pauseTime += 2000;
                         if(pauseTime>=999999){
                             pauseTime = 999999;
                         }
                     }else{
-                        pauseTime -= 1000;
+                        pauseTime -= 2000;
+                        if(pauseTime<=0){
+                            pauseTime = 2000;
+                        }
                     }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
         });
-
+        bind_message = getMessage("bind_success");
     }
 
     public static void handInAllPlayer() {
